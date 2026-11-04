@@ -46,7 +46,6 @@ jobs:
             libbrotli-dev libgtest-dev libprotobuf-dev libunwind-dev libpcre2-dev \
             libzstd-dev lld protobuf-compiler webp
           
-          # تثبيت حزمة النواة بشكل آمن
           sudo apt install -yq linux-modules-extra-$(uname -r) || sudo apt install -yq linux-modules-extra-generic || true
           
           sudo modprobe erofs || true
@@ -55,7 +54,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
-          mkdir -p security firmwares
+          mkdir -p security out/odin/SM-A045F_INS
           echo -n "${{ secrets.PLATFORM_KEY_PK8 }}" | base64 --decode > security/unica_platform.pk8 || true
           echo -n "${{ secrets.PLATFORM_KEY_PEM }}" | base64 --decode > security/unica_platform.x509.pem || true
 
@@ -71,10 +70,17 @@ jobs:
           source ./buildenv.sh ${{ matrix.target }}
           ./scripts/build_dependencies.sh
 
-      - name: Download stock firmware manually from Drive
+      - name: Setup Firmware Manually from Drive
         run: |
-          echo "Downloading Galaxy A04 firmware from Google Drive..."
-          wget -O firmwares/a04_firmware.zip "https://drive.usercontent.google.com/download?id=1Y0-AG8XMwub_alGGUa5A3AaYASRStstj&export=download&authuser=0&confirm=t&uuid=55327e28-304f-44bf-a98f-3d46fd6ac74a&at=AMrWOn3QUh1KEH3SbNgrMVCdn1Nm%3A1793804976528"
+          echo "Downloading firmware package..."
+          wget -O /tmp/firmware.zip "https://drive.usercontent.google.com/download?id=1Y0-AG8XMwub_alGGUa5A3AaYASRStstj&export=download&authuser=0&confirm=t&uuid=55327e28-304f-44bf-a98f-3d46fd6ac74a&at=AMrWOn3QUh1KEH3SbNgrMVCdn1Nm%3A1793804976528"
+          
+          echo "Extracting firmware to UN1CA odin folder..."
+          7z x /tmp/firmware.zip -out/odin/SM-A045F_INS/ -y || unzip /tmp/firmware.zip -d out/odin/SM-A045F_INS/
+          
+          # إنشاء علامة النجاح التي يقرأها سكربت UN1CA
+          touch out/odin/SM-A045F_INS/.downloaded
+          ls -la out/odin/SM-A045F_INS/
 
       - name: Extract stock firmwares
         run: |
