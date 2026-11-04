@@ -46,7 +46,7 @@ jobs:
             libbrotli-dev libgtest-dev libprotobuf-dev libunwind-dev libpcre2-dev \
             libzstd-dev lld protobuf-compiler webp
           
-          # تثبيت حزمة النواة بطريقة آمنة لا توقف البناء
+          # تثبيت حزمة النواة بشكل آمن
           sudo apt install -yq linux-modules-extra-$(uname -r) || sudo apt install -yq linux-modules-extra-generic || true
           
           sudo modprobe erofs || true
@@ -55,7 +55,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
-          mkdir -p security
+          mkdir -p security firmwares
           echo -n "${{ secrets.PLATFORM_KEY_PK8 }}" | base64 --decode > security/unica_platform.pk8 || true
           echo -n "${{ secrets.PLATFORM_KEY_PEM }}" | base64 --decode > security/unica_platform.x509.pem || true
 
@@ -71,10 +71,10 @@ jobs:
           source ./buildenv.sh ${{ matrix.target }}
           ./scripts/build_dependencies.sh
 
-      - name: Download stock firmwares
+      - name: Download stock firmware manually from Drive
         run: |
-          source ./buildenv.sh ${{ matrix.target }}
-          ./scripts/download_fw.sh
+          echo "Downloading Galaxy A04 firmware from Google Drive..."
+          wget -O firmwares/a04_firmware.zip "https://drive.usercontent.google.com/download?id=1Y0-AG8XMwub_alGGUa5A3AaYASRStstj&export=download&authuser=0&confirm=t&uuid=55327e28-304f-44bf-a98f-3d46fd6ac74a&at=AMrWOn3QUh1KEH3SbNgrMVCdn1Nm%3A1793804976528"
 
       - name: Extract stock firmwares
         run: |
