@@ -20,7 +20,8 @@
 # Target device firmware information
 TARGET_NAME="Galaxy A04"
 TARGET_CODENAME="a04"
-TARGET_FIRMWARE="SM-A045F/INS/A045FXXS7DXE1/A045FOXM7DXE1/A045FXXS7DXE1"
+# استبدل الرقم أدناه برقم IMEI حقيقي وصحيح لجهاز Galaxy A04 لكي تقبله خوادم سامسونج، أو ضع الإصدار مباشرة إذا كان يدعمه السكربت
+TARGET_FIRMWARE="SM-A045F/INS/A045FXXSGEZH2"
 TARGET_EXTRA_FIRMWARE=()
 TARGET_ASSERT_MODEL=("SM-A045F" "SM-A045M")
 TARGET_PLATFORM_SDK_VERSION=34
