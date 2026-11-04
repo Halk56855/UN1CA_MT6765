@@ -46,7 +46,7 @@ jobs:
             libbrotli-dev libgtest-dev libprotobuf-dev libunwind-dev libpcre2-dev \
             libzstd-dev lld protobuf-compiler webp
           
-          # تثبيت linux-modules-extra بطريقة آمنة لا تتسبب في توقف البناء إن لم تتطابق النواة
+          # تثبيت حزمة النواة بطريقة آمنة لا توقف البناء
           sudo apt install -yq linux-modules-extra-$(uname -r) || sudo apt install -yq linux-modules-extra-generic || true
           
           sudo modprobe erofs || true
