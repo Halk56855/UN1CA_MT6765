@@ -84,8 +84,24 @@ jobs:
           # إنشاء علامة الاكتمال وإصدار الفريموير محلياً
           echo "A045FXXSGEZH2/A045FOXMGEZH2/A045FXXSGEZH2/A045FXXSGEZH2" > out/odin/SM-A045F_INS/.downloaded
 
-          # ترقيع سكربت extract_fw.sh لمنع الاتصال الخارجي بخوادم سامسونج
-          sed -i 's/LATEST_FIRMWARE="\$(GET_LATEST_FIRMWARE "\$MODEL" "\$CSC")"/LATEST_FIRMWARE="\$(GET_LATEST_FIRMWARE \"\$MODEL\" \"\$CSC\")"\n    [ -z "\$LATEST_FIRMWARE" ] \&\& LATEST_FIRMWARE="\$(cat \"\$ODIN_DIR\/\${MODEL}_\${CSC}\/.downloaded\" 2>\/dev/null)"/g' scripts/extract_fw.sh
+          # استخدام Python للترقيع بشكل آمن بدلاً من sed وتجنب أخطاء الرموز
+          python3 -c '
+          path = "scripts/extract_fw.sh"
+          with open(path, "r") as f:
+              content = f.read()
+
+          target = "LATEST_FIRMWARE=\"$(GET_LATEST_FIRMWARE \"$MODEL\" \"$CSC\")\""
+          replacement = target + "\n    [ -z \"$LATEST_FIRMWARE\" ] && LATEST_FIRMWARE=\"$(cat \"$ODIN_DIR/${MODEL}_${CSC}/.downloaded\" 2>/dev/null)\""
+
+          if target in content:
+              content = content.replace(target, replacement, 1)
+              with open(path, "w") as f:
+                  f.write(content)
+              print("Successfully patched extract_fw.sh")
+          else:
+              print("Target string not found!")
+              exit(1)
+          '
 
       - name: Extract stock firmwares
         run: |
