@@ -75,8 +75,8 @@ jobs:
           echo "Installing gdown and downloading firmware package..."
           pip install --no-cache-dir gdown
           
-          # تنزيل الملف الصحيح باستخدام معرف الملف (File ID) مباشرة
-          gdown --id 1H_eurVag6-eRhZI4eWsxImUnk478N-zV -O /tmp/firmware.zip
+          # استخدام الرابط المباشر لـ Google Drive بدلاً من --id
+          gdown "https://drive.google.com/uc?id=1H_eurVag6-eRhZI4eWsxImUnk478N-zV" -O /tmp/firmware.zip
           
           echo "Verifying downloaded file size..."
           ls -lh /tmp/firmware.zip
