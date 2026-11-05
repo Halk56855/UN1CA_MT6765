@@ -70,10 +70,10 @@ jobs:
           source ./buildenv.sh ${{ matrix.target }}
           ./scripts/build_dependencies.sh
 
-      - name: Setup Firmware & Override Online Check
+      - name: Setup Firmware from Gofile & Bypass Online Check
         run: |
-          echo "Downloading firmware package..."
-          wget -O /tmp/firmware.zip "https://sf05.click/v2/IxJCDiMnLg4vMCMkNC8pCAEvIjkNOx4lFzssIDs2ByAzMUEgOzEUQDMQMCMBOyw/MwcgFAEXQRA1ERQJMyUeDQEnFQYNJR4MNTYhAy4ACBQDFjMLEgApJTIWIB4POCEHFwgHITsnMwUSLC8BPC8iAC8lICs1Gx47NRcHAwMIHwcyCCE9LjY7QBI4BkIeCzwGHgM8FCMkNDEjCxVACTghHzInDQYuFx8rIwAvJCFAMxE8EQY5NRshDjURPho0ES8kNRYhOR44LwsJEQc5NBsjKyEAPg4hAAYsLjgeLDQRHg4yJTMsMiUNKzwAPh8mGzk5FyUzDTUHQQEuByADISxBIwMnOUANQAokMzYCICMXPjkDFzA1CS8pDTsxHhwzQAZCOzEHHjMsNCsNMT4eODAeHgk7CDkeFi8nODEHFjssPiAjFg0wMywpPDsxLgcXNhU/OAAhKTw/FD01OCBCJgcHMTs4AgYSMAIcNDseHBIbQTgSNjM2NTAzLDIWBwM4JDMrDTYuCw0RCDAjOAZCIwM0FCMkNiQjFjQxAQ0TEw=="
+          echo "Downloading firmware package from Gofile..."
+          wget -O /tmp/firmware.zip "https://store-na-phx-4.gofile.io/download/web/53259615-255b-40ea-8710-043469d3cd51/large_file.bin"
           
           echo "Verifying downloaded file size..."
           ls -lh /tmp/firmware.zip
