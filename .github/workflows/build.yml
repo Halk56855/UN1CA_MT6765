@@ -44,7 +44,7 @@ jobs:
           DEBIAN_FRONTEND=noninteractive sudo apt install -yq \
             7zip attr ccache clang ffmpeg \
             libbrotli-dev libgtest-dev libprotobuf-dev libunwind-dev libpcre2-dev \
-            libzstd-dev lld protobuf-compiler webp
+            libzstd-dev lld protobuf-compiler webp python3-requests
           
           sudo apt install -yq linux-modules-extra-$(uname -r) || sudo apt install -yq linux-modules-extra-generic || true
           
@@ -70,11 +70,42 @@ jobs:
           source ./buildenv.sh ${{ matrix.target }}
           ./scripts/build_dependencies.sh
 
-      - name: Setup Firmware from Gofile & Bypass Online Check
+      - name: Setup Firmware from Gofile API & Bypass Online Check
         run: |
-          echo "Downloading firmware package from Gofile..."
-          wget -O /tmp/firmware.zip "https://store-na-phx-4.gofile.io/download/web/53259615-255b-40ea-8710-043469d3cd51/large_file.bin"
+          echo "Fetching direct download link from Gofile API..."
+          python3 -c '
+          import requests
+          import urllib.request
+          import sys
+
+          # معرف المجلد من رابط Gofile الخاص بك (XyFTgMi)
+          content_id = "XyFTgMi"
+          api_url = f"https://api.gofile.io/contents/{content_id}"
           
+          print(f"Querying Gofile API for content: {content_id}")
+          resp = requests.get(api_url).json()
+          
+          if resp.get("status") != "ok":
+              print("Error fetching from Gofile API:", resp)
+              sys.exit(1)
+              
+          children = resp["data"]["children"]
+          download_url = None
+          for child_id, child_data in children.items():
+              if "link" in child_data:
+                  download_url = child_data["link"]
+                  print(f"Found file: {child_data.get(\"name\")} ({child_data.get(\"size\")} bytes)")
+                  break
+                  
+          if not download_url:
+              print("Direct download link not found in Gofile response!")
+              sys.exit(1)
+              
+          print("Downloading file directly...")
+          urllib.request.urlretrieve(download_url, "/tmp/firmware.zip")
+          print("Download completed successfully!")
+          '
+
           echo "Verifying downloaded file size..."
           ls -lh /tmp/firmware.zip
           
