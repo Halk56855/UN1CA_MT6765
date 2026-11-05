@@ -1,27 +1,26 @@
-name: Auto Upload to Direct Link Host
+name: Upload to GitHub Releases
 
 on:
-  workflow_dispatch: # يتيح لك تشغيل العملية يدوياً وقتما تشاء بضغطة زر
+  workflow_dispatch:
 
 jobs:
-  upload-file:
+  release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: 1. Download file from source link
+      - name: Download file from source
         run: |
-          echo "جاري تحميل الملف..."
           curl -L "https://sf06.click/v2/IxJCDiMnNDEjNkEgODA+BgEvQSQjNh4lFzssIDs2ByAzMUEgOzEUQDMQMCMBOyw/IwczPTIlIQA0MQI9HjYuMDsbKUEvFiAAHggGIRIDNB0yACkNARcsKyM2HhYSCEFBDTAuJzUXMxIPCykHPAAGASEsISsyMRQ9OzghAzQsIx8zJwcbIxYgQC5ABkIeCzwGHgM8FCMkNDEjCxVACTghHzInDQYuFx8rIwAvJCFAMxE8EQY5NRshDjURPho0ES8kNRYhOR44LwsJEQc5NBsjKyEAPg4hAAYsLjgeLDQRHg4yJTMsMiUNKzwAPh8mGzk5FyUzDTUHQQEuByADISxBIwMnOUANQAokMzYCICMXPjkDFzA1CS8pDTsxHhwzQAZCOzEHHjMsNCsNMT4eODAeHgk7CDkeFi8nODEHFjssPiAjFg0wMywpPDsxLgcXNhU/OAAhKTw/FD01OCBCJgceBx4IKR87Fy4mLwMvBx4XQRcSEUEaEhc+NR42Lw4NAywjMgg0MCMSMDgjOAZCIwM0FCMkNiQeAzwdHhUTEw==" -o my_file.bin
 
-      - name: 2. Upload file to Catbox.moe (Direct Link)
-        id: upload_step
-        run: |
-          echo "جاري رفع الملف للحصول على رابط مباشر وثابت..."
-          RESPONSE=$(curl -s -F "reqtype=fileupload" -F "fileToUpload=@my_file.bin" https://catbox.moe/user/api.php)
-          echo "direct_link=$RESPONSE" >> $GITHUB_OUTPUT
-          echo "=========================================="
-          echo "تم الرفع بنجاح! الرابط المباشر هو:"
-          echo "$RESPONSE"
-          echo "=========================================="
+      - name: Create Release and Upload File
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: "Direct Download Release"
+          files: my_file.bin
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
