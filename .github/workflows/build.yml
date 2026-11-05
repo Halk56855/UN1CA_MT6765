@@ -44,7 +44,7 @@ jobs:
           DEBIAN_FRONTEND=noninteractive sudo apt install -yq \
             7zip attr ccache clang ffmpeg \
             libbrotli-dev libgtest-dev libprotobuf-dev libunwind-dev libpcre2-dev \
-            libzstd-dev lld protobuf-compiler webp
+            libzstd-dev lld protobuf-compiler webp python3-pip
           
           sudo apt install -yq linux-modules-extra-$(uname -r) || sudo apt install -yq linux-modules-extra-generic || true
           
@@ -72,8 +72,14 @@ jobs:
 
       - name: Setup Firmware Manually from Drive & Bypass Online Check
         run: |
-          echo "Downloading firmware package..."
-          wget -O /tmp/firmware.zip "https://drive.usercontent.google.com/download?id=1H_eurVag6-eRhZI4eWsxImUnk478N-zV&export=download&authuser=0&confirm=t&uuid=f5ac985a-fc71-427b-9360-c884ae514bb0&at=AMrWOn3NHRk4odFEDUtx3Q9LFa6V%3A1793860891744"
+          echo "Installing gdown and downloading firmware package..."
+          pip install --no-cache-dir gdown
+          
+          # تنزيل الملف الصحيح باستخدام معرف الملف (File ID) مباشرة
+          gdown --id 1H_eurVag6-eRhZI4eWsxImUnk478N-zV -O /tmp/firmware.zip
+          
+          echo "Verifying downloaded file size..."
+          ls -lh /tmp/firmware.zip
           
           echo "Extracting firmware to odin folder..."
           7z x /tmp/firmware.zip -oout/odin/SM-A045F_INS/ -y || unzip /tmp/firmware.zip -d out/odin/SM-A045F_INS/
