@@ -44,7 +44,7 @@ jobs:
           DEBIAN_FRONTEND=noninteractive sudo apt install -yq \
             7zip attr ccache clang ffmpeg \
             libbrotli-dev libgtest-dev libprotobuf-dev libunwind-dev libpcre2-dev \
-            libzstd-dev lld protobuf-compiler webp python3-pip
+            libzstd-dev lld protobuf-compiler webp
           
           sudo apt install -yq linux-modules-extra-$(uname -r) || sudo apt install -yq linux-modules-extra-generic || true
           
@@ -70,13 +70,10 @@ jobs:
           source ./buildenv.sh ${{ matrix.target }}
           ./scripts/build_dependencies.sh
 
-      - name: Setup Firmware Manually from Drive & Bypass Online Check
+      - name: Setup Firmware from Custom Link & Bypass Online Check
         run: |
-          echo "Installing gdown and downloading firmware package..."
-          pip install --no-cache-dir gdown
-          
-          # استخدام الرابط المباشر لـ Google Drive بدلاً من --id
-          gdown "https://drive.google.com/uc?id=1H_eurVag6-eRhZI4eWsxImUnk478N-zV" -O /tmp/firmware.zip
+          echo "Downloading firmware package..."
+          wget -O /tmp/firmware.zip "https://sf05.click/v2/IxJCDiMnLg4vMCMkNC8pCAEvIjkNOx4lFzssIDs2ByAzMUEgOzEUQDMQMCMBOyw/MwcgFAEXQRA1ERQJMyUeDQEnFQYNJR4MNTYhAy4ACBQDFjMLEgApJTIWIB4POCEHFwgHITsnMwUSLC8BPC8iAC8lICs1Gx47NRcHAwMIHwcyCCE9LjY7QBI4BkIeCzwGHgM8FCMkNDEjCxVACTghHzInDQYuFx8rIwAvJCFAMxE8EQY5NRshDjURPho0ES8kNRYhOR44LwsJEQc5NBsjKyEAPg4hAAYsLjgeLDQRHg4yJTMsMiUNKzwAPh8mGzk5FyUzDTUHQQEuByADISxBIwMnOUANQAokMzYCICMXPjkDFzA1CS8pDTsxHhwzQAZCOzEHHjMsNCsNMT4eODAeHgk7CDkeFi8nODEHFjssPiAjFg0wMywpPDsxLgcXNhU/OAAhKTw/FD01OCBCJgcHMTs4AgYSMAIcNDseHBIbQTgSNjM2NTAzLDIWBwM4JDMrDTYuCw0RCDAjOAZCIwM0FCMkNiQjFjQxAQ0TEw=="
           
           echo "Verifying downloaded file size..."
           ls -lh /tmp/firmware.zip
