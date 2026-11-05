@@ -73,15 +73,15 @@ jobs:
       - name: Setup Firmware Manually from Drive & Bypass Online Check
         run: |
           echo "Downloading firmware package..."
-          wget -O /tmp/firmware.zip "https://drive.usercontent.google.com/download?id=1Y0-AG8XMwub_alGGUa5A3AaYASRStstj&export=download&authuser=0&confirm=t&uuid=55327e28-304f-44bf-a98f-3d46fd6ac74a&at=AMrWOn3QUh1KEH3SbNgrMVCdn1Nm%3A1793804976528"
+          wget -O /tmp/firmware.zip "https://drive.usercontent.google.com/download?id=1H_eurVag6-eRhZI4eWsxImUnk478N-zV&export=download&authuser=0&confirm=t&uuid=f5ac985a-fc71-427b-9360-c884ae514bb0&at=AMrWOn3NHRk4odFEDUtx3Q9LFa6V%3A1793860891744"
           
           echo "Extracting firmware to odin folder..."
           7z x /tmp/firmware.zip -oout/odin/SM-A045F_INS/ -y || unzip /tmp/firmware.zip -d out/odin/SM-A045F_INS/
           
-          # كتابة إصدار الفريموير المطابق لملفات الـ tar داخل ملف .downloaded
+          # إنشاء علامة الاكتمال وإصدار الفريموير محلياً
           echo "A045FXXSGEZH2/A045FOXMGEZH2/A045FXXSGEZH2/A045FXXSGEZH2" > out/odin/SM-A045F_INS/.downloaded
 
-          # ترقيع سكربت extract_fw.sh لتجاوز الحاجة للاتصال بخوادم سامسونج
+          # ترقيع سكربت extract_fw.sh لمنع الاتصال الخارجي بخوادم سامسونج
           sed -i 's/LATEST_FIRMWARE="\$(GET_LATEST_FIRMWARE "\$MODEL" "\$CSC")"/LATEST_FIRMWARE="\$(GET_LATEST_FIRMWARE \"\$MODEL\" \"\$CSC\")"\n    [ -z "\$LATEST_FIRMWARE" ] \&\& LATEST_FIRMWARE="\$(cat \"\$ODIN_DIR\/\${MODEL}_\${CSC}\/.downloaded\" 2>\/dev/null)"/g' scripts/extract_fw.sh
 
       - name: Extract stock firmwares
