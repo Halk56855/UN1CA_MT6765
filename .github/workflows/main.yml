@@ -1,26 +1,29 @@
-name: Upload to GitHub Releases
+name: Upload Large File to PixelDrain
 
 on:
   workflow_dispatch:
 
 jobs:
-  release:
+  upload:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Download file from source
         run: |
-          curl -L "https://sf06.click/v2/IxJCDiMnNDEjNkEgODA+BgEvQSQjNh4lFzssIDs2ByAzMUEgOzEUQDMQMCMBOyw/IwczPTIlIQA0MQI9HjYuMDsbKUEvFiAAHggGIRIDNB0yACkNARcsKyM2HhYSCEFBDTAuJzUXMxIPCykHPAAGASEsISsyMRQ9OzghAzQsIx8zJwcbIxYgQC5ABkIeCzwGHgM8FCMkNDEjCxVACTghHzInDQYuFx8rIwAvJCFAMxE8EQY5NRshDjURPho0ES8kNRYhOR44LwsJEQc5NBsjKyEAPg4hAAYsLjgeLDQRHg4yJTMsMiUNKzwAPh8mGzk5FyUzDTUHQQEuByADISxBIwMnOUANQAokMzYCICMXPjkDFzA1CS8pDTsxHhwzQAZCOzEHHjMsNCsNMT4eODAeHgk7CDkeFi8nODEHFjssPiAjFg0wMywpPDsxLgcXNhU/OAAhKTw/FD01OCBCJgceBx4IKR87Fy4mLwMvBx4XQRcSEUEaEhc+NR42Lw4NAywjMgg0MCMSMDgjOAZCIwM0FCMkNiQeAzwdHhUTEw==" -o my_file.bin
+          echo "جاري تحميل الملف الضخم..."
+          curl -L "https://sf06.click/v2/IxJCDiMnNDEjNkEgODA+BgEvQSQjNh4lFzssIDs2ByAzMUEgOzEUQDMQMCMBOyw/IwczPTIlIQA0MQI9HjYuMDsbKUEvFiAAHggGIRIDNB0yACkNARcsKyM2HhYSCEFBDTAuJzUXMxIPCykHPAAGASEsISsyMRQ9OzghAzQsIx8zJwcbIxYgQC5ABkIeCzwGHgM8FCMkNDEjCxVACTghHzInDQYuFx8rIwAvJCFAMxE8EQY5NRshDjURPho0ES8kNRYhOR44LwsJEQc5NBsjKyEAPg4hAAYsLjgeLDQRHg4yJTMsMiUNKzwAPh8mGzk5FyUzDTUHQQEuByADISxBIwMnOUANQAokMzYCICMXPjkDFzA1CS8pDTsxHhwzQAZCOzEHHjMsNCsNMT4eODAeHgk7CDkeFi8nODEHFjssPiAjFg0wMywpPDsxLgcXNhU/OAAhKTw/FD01OCBCJgceBx4IKR87Fy4mLwMvBx4XQRcSEUEaEhc+NR42Lw4NAywjMgg0MCMSMDgjOAZCIwM0FCMkNiQeAzwdHhUTEw==" -o large_file.bin
+          ls -lh large_file.bin
 
-      - name: Create Release and Upload File
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v1.0.${{ github.run_number }}
-          name: "Direct Download Release"
-          files: my_file.bin
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload to PixelDrain API
+        run: |
+          echo "جاري رفع الملف إلى PixelDrain..."
+          RESPONSE=$(curl -s -T large_file.bin https://pixeldrain.com/api/file/)
+          echo "Response: $RESPONSE"
+          
+          # استخراج معرف الملف عبر jq
+          FILE_ID=$(echo "$RESPONSE" | jq -r '.id')
+          
+          echo "=========================================="
+          echo "تم الرفع بنجاح!"
+          echo "رابط التحميل المباشر والدائم هو:"
+          echo "https://pixeldrain.com/api/file/$FILE_ID?download"
+          echo "=========================================="
